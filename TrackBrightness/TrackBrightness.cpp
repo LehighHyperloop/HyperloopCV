@@ -5,6 +5,10 @@
 using namespace std;
 using namespace cv;
 
+void createAlert();
+
+const int TAPE_THRESHOLD = 1000;
+
 int main()
 {
     VideoCapture capture;
@@ -16,6 +20,7 @@ int main()
     Scalar brightness_min = Scalar(0,0,220);
     Scalar brightness_max = Scalar(255,255,255); //Hue, Saturation, Value (Brightness)
 
+    int pixelCount;
 
     while(capture.read(frame))
     {
@@ -31,10 +36,25 @@ int main()
         //add the two mats generated above
         GaussianBlur(result, result, Size(39,39), 2, 2);
 
+        pixelCount = countNonZero(result);
+
+        //check how much brightness is detected, alert if over a certain threshold
+        //might replace with a check for a rectangle if needed later
+        if (pixelCount > TAPE_THRESHOLD)
+        {
+            createAlert();
+        }
+
         //show the image
         imshow("Tracking Color Orange", result);
 
         waitKey(10);
 
     }
+}
+
+//noop for now, will eventually be set up to send a signal in some way or another
+void createAlert()
+{
+
 }
